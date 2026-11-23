@@ -2,7 +2,7 @@
 
 Fee management for schools, academies, tuition centres and coaching institutes — classes and fee structures, one-click monthly challan generation, payment recording, dues tracking and printable challans.
 
-**[Live demo](https://ahsan-school-fees.vercel.app)** · Login: `admin` / `admin123`
+**[Live demo](https://feesdesk.vercel.app)** · Login: `admin` / `admin123`
 
 ![Dashboard](screenshots/01_dashboard.png)
 

@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+venv/
+.venv/
+env/
+
+# Local databases & backups (demo DB is bundled intentionally)
+*.db-journal
+*.db-wal
+*.db-shm
+backups/
+
+# Environment / secrets
+.env
+.env.*
+*.log
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Vercel
+.vercel
+
+.vercel

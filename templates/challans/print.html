@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Challan {{ ch.challan_number }}{% endblock %}
+{% block content %}
+<div class="challan-wrap">
+  <div class="no-print" style="display:flex; gap:10px; margin-bottom:14px;">
+    <button class="btn btn-primary" onclick="window.print()">🖨 Print / Save PDF</button>
+    <a class="btn" href="{{ url_for('challan_view', cid=ch.id) }}">← Back</a>
+  </div>
+  <div class="challan">
+    <h2>{{ settings.school_name }}</h2>
+    <div class="center">{{ settings.address }}</div>
+    <div class="center">{{ settings.phone }} · {{ settings.email }}</div>
+    <hr>
+    <table>
+      <tr><td><strong>Challan No:</strong> {{ ch.challan_number }}</td><td style="text-align:right;"><strong>Billing Month:</strong> {{ month_label(ch.billing_month) }}</td></tr>
+    </table>
+    <div class="box">
+      <table>
+        <tr><td style="width:50%;"><strong>Student Name:</strong> {{ ch.student_name }}</td><td><strong>Class:</strong> {{ ch.class_name }}</td></tr>
+        <tr><td><strong>Father Name:</strong> {{ student.father_name }}</td><td><strong>Roll No:</strong> {{ student.roll_no }}</td></tr>
+        <tr><td><strong>Phone:</strong> {{ student.phone }}</td><td><strong>Issue Date:</strong> {{ ch.issued_at[:10] }}</td></tr>
+      </table>
+    </div>
+    <hr>
+    <table>
+      <tr><th>Description</th><th style="text-align:right;">Amount (Rs.)</th></tr>
+      <tr><td>Monthly Tuition Fee — {{ month_label(ch.billing_month) }}</td><td style="text-align:right;">{{ '%.2f'|format(ch.monthly_fee) }}</td></tr>
+      {% if ch.late_fee %}<tr><td>Late Fee</td><td style="text-align:right;">{{ '%.2f'|format(ch.late_fee) }}</td></tr>{% endif %}
+      <tr><td><strong>TOTAL</strong></td><td style="text-align:right;"><strong>Rs. {{ '%.2f'|format(ch.total) }}</strong></td></tr>
+    </table>
+    <hr>
+    {% if settings.bank_name %}
+    <div class="box">
+      <strong>Bank Payment:</strong><br>
+      {{ settings.bank_name }} — {{ settings.account_title }}<br>
+      A/C # {{ settings.account_number }}
+    </div>
+    {% endif %}
+    <div class="center" style="margin-top:12px;">{{ settings.challan_footer }}</div>
+  </div>
+</div>
+{% endblock %}

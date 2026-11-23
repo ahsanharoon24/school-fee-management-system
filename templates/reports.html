@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Reports — {{ settings.school_name }}{% endblock %}
+{% block content %}
+<h1>📈 Reports & Dues</h1>
+
+<div class="filter-bar">
+  <form method="get">
+    <label>Year</label>
+    <input type="number" name="year" value="{{ year }}" min="2020" max="2040" style="width:100px;">
+    <button class="btn btn-primary">Filter</button>
+  </form>
+</div>
+
+<div class="panel">
+  <h2>Monthly Collection ({{ year }})</h2>
+  <table>
+    <tr><th>Month</th><th>Challans</th><th>Billed</th><th>Collected</th><th>Outstanding</th></tr>
+    {% for m in monthly %}
+    <tr>
+      <td>{{ month_label(m.m) }}</td><td>{{ m.challans }}</td>
+      <td>Rs. {{ '%.2f'|format(m.billed) }}</td>
+      <td>Rs. {{ '%.2f'|format(m.collected) }}</td>
+      <td class="{{ 'red' if m.billed - m.collected > 0 else '' }}">Rs. {{ '%.2f'|format(m.billed - m.collected) }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5" style="color:#64748b;">No data found.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+
+<div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; align-items:start;">
+  <div class="panel">
+    <h2>Class-wise ({{ year }})</h2>
+    <table>
+      <tr><th>Class</th><th>Challans</th><th>Billed</th><th>Unpaid</th></tr>
+      {% for c in by_class %}
+      <tr><td>{{ c.class_name }}</td><td>{{ c.challans }}</td><td>Rs. {{ '%.2f'|format(c.billed) }}</td><td>{{ c.unpaid }}</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div class="panel">
+    <h2>🚨 Defaulters (unpaid challans)</h2>
+    <table>
+      <tr><th>Student</th><th>Class</th><th>Month</th><th>Due</th></tr>
+      {% for d in defaulters %}
+      <tr>
+        <td>{{ d.student_name }}</td><td>{{ d.class_name }}</td><td>{{ d.billing_month }}</td>
+        <td class="red">Rs. {{ '%.2f'|format(d.total - d.paid) }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4" style="color:#64748b;">All clear! 🎉</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard — {{ settings.school_name }}{% endblock %}
+{% block content %}
+<h1>📊 Dashboard — {{ month_label(this_month) }}</h1>
+
+<div class="cards">
+  <div class="card indigo"><div class="num">{{ students }}</div><div class="lbl">Active Students</div></div>
+  <div class="card"><div class="num">Rs. {{ '%.0f'|format(billed) }}</div><div class="lbl">This Month Billed ({{ billed_count }} challans)</div></div>
+  <div class="card green"><div class="num">Rs. {{ '%.0f'|format(collected) }}</div><div class="lbl">Collected ({{ paid_count }} paid)</div></div>
+  <div class="card {{ 'red' if outstanding > 0 else 'green' }}"><div class="num">Rs. {{ '%.0f'|format(outstanding) }}</div><div class="lbl">Outstanding</div></div>
+</div>
+
+<div class="panel">
+  <div style="display:flex; justify-content:space-between; align-items:center;">
+    <h2 style="margin:0;">⚡ Monthly Challan Generate</h2>
+  </div>
+  <p style="color:#64748b; font-size:13px; margin:8px 0 12px;">
+    Generate challans for all active students for the selected month with one click.
+    Students who already have one will be skipped automatically.
+  </p>
+  <form method="post" action="{{ url_for('challan_generate') }}" style="display:flex; gap:10px; align-items:end;">
+    <div><label>Month</label><input type="month" name="month" value="{{ this_month }}"></div>
+    <button class="btn btn-primary">⚡ Generate Challans</button>
+  </form>
+</div>
+
+<div class="panel">
+  <h2>🕐 Recent Challans</h2>
+  <table>
+    <tr><th>#</th><th>Challan No</th><th>Student</th><th>Class</th><th>Month</th><th>Total</th><th>Paid</th><th>Status</th></tr>
+    {% for ch in recent %}
+    {% set d = dues_map.get(ch.id) %}
+    <tr>
+      <td><a href="{{ url_for('challan_view', cid=ch.id) }}">{{ ch.id }}</a></td>
+      <td>{{ ch.challan_number }}</td>
+      <td>{{ ch.student_name }}</td>
+      <td>{{ ch.class_name }}</td>
+      <td>{{ ch.billing_month }}</td>
+      <td>Rs. {{ '%.0f'|format(ch.total) }}</td>
+      <td>Rs. {{ '%.0f'|format(d.paid if d else 0) }}</td>
+      <td><span class="badge {{ ch.status }}">{{ ch.status }}</span></td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Challans — {{ settings.school_name }}{% endblock %}
+{% block content %}
+<h1>🧾 Challans — {{ month_label(month) }}</h1>
+
+<div class="filter-bar">
+  <form method="get">
+    <label>Month</label>
+    <input type="month" name="month" value="{{ month }}" onchange="this.form.submit()">
+    <label>Class</label>
+    <select name="class_id" onchange="this.form.submit()">
+      <option value="">All Classes</option>
+      {% for c in classes %}<option value="{{ c.id }}" {{ 'selected' if class_id == c.id|string }}>{{ c.name }}</option>{% endfor %}
+    </select>
+    <label>Status</label>
+    <select name="status" onchange="this.form.submit()">
+      <option value="">All</option>
+      <option value="issued" {{ 'selected' if status == 'issued' }}>Issued</option>
+      <option value="partially_paid" {{ 'selected' if status == 'partially_paid' }}>Partial</option>
+      <option value="paid" {{ 'selected' if status == 'paid' }}>Paid</option>
+      <option value="cancelled" {{ 'selected' if status == 'cancelled' }}>Cancelled</option>
+    </select>
+  </form>
+  <form method="post" action="{{ url_for('challan_generate') }}">
+    <input type="hidden" name="month" value="{{ month }}">
+    <button class="btn btn-primary">⚡ Generate for {{ month }}</button>
+  </form>
+</div>
+
+<div class="panel">
+  <table>
+    <tr><th>Challan No</th><th>Student</th><th>Class</th><th>Total</th><th>Paid</th><th>Due</th><th>Status</th><th></th></tr>
+    {% for ch in challans %}
+    {% set p = paid_map.get(ch.id, 0) %}
+    <tr>
+      <td><a href="{{ url_for('challan_view', cid=ch.id) }}">{{ ch.challan_number }}</a></td>
+      <td>{{ ch.student_name }}</td>
+      <td>{{ ch.class_name }}</td>
+      <td>Rs. {{ '%.2f'|format(ch.total) }}</td>
+      <td>Rs. {{ '%.2f'|format(p) }}</td>
+      <td>Rs. {{ '%.2f'|format(ch.total - p) }}</td>
+      <td><span class="badge {{ ch.status }}">{{ ch.status }}</span></td>
+      <td><a class="btn btn-sm" href="{{ url_for('challan_print', cid=ch.id) }}">🖨 Print</a></td>
+    </tr>
+    {% else %}
+    <tr><td colspan="8" style="color:#64748b;">No challans for this month — click "Generate"!</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}{{ settings.school_name }}{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<aside class="sidebar">
+  <div class="brand">
+    <span class="brand-logo">🎓</span>
+    <div class="brand-text">
+      <strong>{{ settings.school_name }}</strong>
+      <small>Fee Management</small>
+    </div>
+  </div>
+  <nav>
+    <a href="{{ url_for('dashboard') }}" class="{{ 'active' if request.path == '/' }}">📊 Dashboard</a>
+    <div class="nav-group">CHALLANS</div>
+    <a href="{{ url_for('challan_list') }}" class="{{ 'active' if request.path == '/challans' }}">🧾 All Challans</a>
+    <a href="{{ url_for('reports') }}" class="{{ 'active' if request.path == '/reports' }}">📈 Reports & Dues</a>
+    <div class="nav-group">SETUP</div>
+    <a href="{{ url_for('students_page') }}" class="{{ 'active' if request.path == '/students' }}">👨‍🎓 Students</a>
+    <a href="{{ url_for('classes_page') }}" class="{{ 'active' if request.path == '/classes' }}">🏫 Classes & Fees</a>
+    <div class="nav-group">SYSTEM</div>
+    <a href="{{ url_for('settings_page') }}" class="{{ 'active' if request.path == '/settings' }}">⚙️ Settings</a>
+    <a href="{{ url_for('password') }}">🔑 Change Password</a>
+    <a href="{{ url_for('logout') }}">🚪 Logout</a>
+  </nav>
+</aside>
+<main class="main">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+      <div class="flash {{ cat }}">{{ msg }}</div>
+    {% endfor %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+</body>
+</html>
